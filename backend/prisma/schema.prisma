@@ -12,32 +12,41 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  orders Order[]
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@map("users")
 }
 
 model Order {
-  id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String         @id @default(uuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   orderProduct OrderProduct[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status       OrderStatus    @default(PENDING)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
   @@map("orders")
 }
 
+enum OrderStatus {
+  PENDING
+  DELIVERED
+  CANCELLED
+}
+
 model OrderProduct {
-  id String @id @default(uuid())
-  orderId String
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId String
-  quantity Int
+  quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
