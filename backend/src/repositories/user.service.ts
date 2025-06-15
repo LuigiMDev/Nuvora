@@ -8,15 +8,18 @@ import * as bcrypt from 'bcryptjs';
 export class RepositoryUserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUser({ name, email, password }: CreateUserDTO): Promise<User | null> {
-   
+  async createUser({
+    name,
+    email,
+    password,
+  }: CreateUserDTO): Promise<User | null> {
     const existingUser = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
     if (existingUser) {
-      return null;
+      throw new Error('Já existe um usuário com este e-mail');
     }
 
     const passwordEncrypted = await bcrypt.hash(password, 10);
@@ -48,5 +51,13 @@ export class RepositoryUserService {
     }
 
     return user;
+  }
+
+  async findUserById(id: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 }
