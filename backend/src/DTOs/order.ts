@@ -3,13 +3,11 @@ import {
   IsArray,
   IsInt,
   IsNotEmpty,
-  IsString,
   Min,
   ValidateNested,
 } from 'class-validator';
 
 export class CreateOrderDTO {
-
   @IsNotEmpty({ message: 'A lista de produtos é obrigatória' })
   @IsArray({ message: 'A lista de produtos deve ser um array' })
   @ValidateNested({
@@ -22,8 +20,8 @@ export class CreateOrderDTO {
 
 class OrderProductDTO {
   @IsNotEmpty({ message: 'O id do produto é obrigatório' })
-  @IsString({ message: 'O id do produto deve ser uma string' })
-  productId: string;
+  @IsInt({ message: 'O id do produto deve ser um número inteiro' })
+  productId: number;
 
   @IsNotEmpty({ message: 'A quantidade é obrigatória' })
   @IsInt({ message: 'A quantidade deve ser um número inteiro' })

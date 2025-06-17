@@ -47,7 +47,26 @@ export class OrderService {
     }
   }
 
-  getOrder(orderId: string): string {
-    return `Order details for ID: ${orderId}`;
+  async getOrders(req: Request): Promise<OrderResponse[]> {
+    try {
+      const token = req.cookies.token as string | undefined;
+      if (!token) {
+        throw new Error('Token não encontrado');
+      }
+      const { userId } = this.jwt.verifyToken(token);
+
+      return await this.repo.getOrders(userId);
+    } catch (error) {
+      console.log('Error fetching orders:', error);
+      if (
+        error instanceof Error &&
+        error.message === 'Token inválido ou expirado'
+      ) {
+        throw new BadRequestException('Token inválido ou expirado');
+      }
+      throw new InternalServerErrorException(
+        'Ocorreu um erro ao buscar os pedidos',
+      );
+    }
   }
 }

@@ -23,13 +23,14 @@ model User {
 }
 
 model Order {
-  id           String         @id @default(uuid())
-  userId       String
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderProduct OrderProduct[]
-  status       OrderStatus    @default(PENDING)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id                String         @id @default(uuid())
+  userId            String
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderProduct      OrderProduct[]
+  totalPriceInCents Int
+  status            OrderStatus    @default(PENDING)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@map("orders")
 }
@@ -43,18 +44,19 @@ enum OrderStatus {
 // Registro de produtos do pedido, evitando chamada para o back e depois para as APIs de produtos
 
 model OrderProduct {
-  id           String   @id @default(uuid())
-  orderId      String
-  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId    Int
-  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name         String
-  priceInCents Int
-  hasdiscount  Boolean
-  discount     Int
-  quantity     Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                       String   @id @default(uuid())
+  orderId                  String
+  order                    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId                Int
+  product                  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name                     String
+  priceInCents             Int
+  hasdiscount              Boolean  @default(false)
+  discountInPercent        Int?
+  priceWithDiscountInCents Int
+  quantity                 Int
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 
   @@map("order_products")
 }

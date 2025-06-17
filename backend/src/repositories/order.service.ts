@@ -3,6 +3,16 @@ import { CreateOrderDTO } from 'src/DTOs/order';
 import { PrismaService } from 'src/PrismaService/prisma.service';
 import { OrderResponse } from 'src/types/order';
 
+type OrderProductData = {
+  name: string;
+  priceInCents: number;
+  hasdiscount: boolean;
+  discountInPercent: number | null;
+  priceWithDiscountInCents: number;
+  productId: number;
+  quantity: number;
+};
+
 @Injectable()
 export class RepositoryOrderService {
   constructor(private readonly prisma: PrismaService) {}
@@ -10,23 +20,59 @@ export class RepositoryOrderService {
     orderData: CreateOrderDTO,
     userId: string,
   ): Promise<OrderResponse> {
+    const productsIds = orderData.products.map((product) => product.productId);
+
+    const products = await this.prisma.product.findMany({
+      where: {
+        id: {
+          in: productsIds,
+        },
+      },
+    });
+
+    const orderProducts: OrderProductData[] = orderData.products.map((p) => {
+      const product = products.find((prod) => prod.id === p.productId);
+      if (!product) {
+        throw new Error(`Produto com ID ${p.productId} não foi encontrado`);
+      }
+
+      return {
+        productId: product.id,
+        name: product.name,
+        hasdiscount: product.hasdiscount,
+        discountInPercent: product.discountInPercent,
+        priceWithDiscountInCents: product.priceWithDiscountInCents,
+        quantity: p.quantity,
+        priceInCents: product.priceInCents,
+      };
+    });
+
+    const totalPriceInCents = orderProducts.reduce(
+      (total, product) =>
+        total + product.priceWithDiscountInCents * product.quantity,
+      0,
+    );
+
     return await this.prisma.order.create({
       data: {
         userId: userId,
+        totalPriceInCents,
         orderProduct: {
-          create: orderData.products.map((product) => ({
-            productId: product.productId,
-            quantity: product.quantity,
-          })),
+          create: orderProducts,
         },
       },
       select: {
         id: true,
         createdAt: true,
-        status: true,
+        totalPriceInCents: true,
         orderProduct: {
           select: {
             productId: true,
+            name: true,
+            priceInCents: true,
+            hasdiscount: true,
+            discountInPercent: true,
+            priceWithDiscountInCents: true,
             quantity: true,
           },
         },
@@ -34,8 +80,27 @@ export class RepositoryOrderService {
     });
   }
 
-  getOrder(orderId: string): string {
-    // Here you would typically retrieve the order from a database
-    return `Order details for ID: ${orderId}`;
+  async getOrders(userId: string) {
+    return await this.prisma.order.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        totalPriceInCents: true,
+        orderProduct: {
+          select: {
+            productId: true,
+            name: true,
+            priceInCents: true,
+            hasdiscount: true,
+            discountInPercent: true,
+            priceWithDiscountInCents: true,
+            quantity: true,
+          },
+        },
+      },
+    });
   }
 }
