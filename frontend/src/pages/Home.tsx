@@ -104,9 +104,12 @@ export default function Home() {
         <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Bem-vindo à <span className="text-yellow-300">Nuvora</span>
-              </h1>
+              <div className="flex justify-center items-end gap-5 mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold">
+                  Bem-vindo à
+                </h1>
+                <img src="/nuvora_hero.svg" alt="Nuvora" className="w-52" />
+              </div>
               <p className="text-lg md:text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
                 Descubra produtos incríveis com os melhores preços e qualidade
                 garantida
