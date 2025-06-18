@@ -9,18 +9,18 @@ type CartItem = {
 type CartState = {
   cartItems: CartItem[];
   setCartItems: (cartItems: CartItem[]) => void;
-  addItemToCart: (productId: number) => void;
+  addItemToCart: (productId: number, quantity?: number) => void;
   removeItemToCart: (productId: number) => void;
 };
 
 export const useCart = create<CartState>((set, get) => ({
   cartItems: [],
   setCartItems: (cartItems: CartItem[]) => set({ cartItems }),
-  addItemToCart: (productId: number) => {
+  addItemToCart: (productId: number, quantity: number = 1) => {
     const { setCartItems } = get();
     const cartItem = {
       id: productId,
-      quantity: 1,
+      quantity
     };
 
     const existingCart = JSON.parse(

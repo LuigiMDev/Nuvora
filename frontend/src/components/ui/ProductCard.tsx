@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       : "bg-blue-100 text-blue-800";
 
   return (
-    <Link to={`/product/id=${product.id}`}>
+    <Link to={`/product/${product.id}`}>
       <Card className="group h-full flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-0 shadow-sm">
         <div className="relative overflow-hidden">
           <img

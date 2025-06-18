@@ -96,38 +96,6 @@ export default function Home() {
     parseUrlFilters();
   };
 
-  const getFilterLabel = (key: FilterKey, value: string): string => {
-    if (key === "search") return `Busca: "${value}"`;
-
-    const labels: Record<string, Record<string, string>> = {
-      category: {
-        eletronicos: "Eletrônicos",
-        roupas: "Roupas",
-        casa: "Casa",
-        esportes: "Esportes",
-        livros: "Livros",
-        beleza: "Beleza",
-        automotivo: "Automotivo",
-      },
-      material: {
-        algodao: "Algodão",
-        poliester: "Poliéster",
-        couro: "Couro",
-        metal: "Metal",
-        plastico: "Plástico",
-        madeira: "Madeira",
-        vidro: "Vidro",
-        ceramica: "Cerâmica",
-      },
-      supplier: {
-        brasileiro: "🇧🇷 Nacional",
-        europeu: "🇪🇺 Europeu",
-      },
-    };
-
-    return labels[key]?.[value] || value;
-  };
-
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
   return (
@@ -175,7 +143,7 @@ export default function Home() {
                   variant="secondary"
                   className="flex items-center gap-1 bg-blue-100 text-blue-800"
                 >
-                  {getFilterLabel(key as FilterKey, value)}
+                  {value}
                   <button
                     onClick={() => removeFilter(key as FilterKey)}
                     className="ml-1 hover:bg-black/10 rounded-full p-0.5"
