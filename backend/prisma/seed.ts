@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-type BrazilianProductData = {
+type BrazilianProductFormated = {
   id: string;
   nome: string;
   descricao: string;
@@ -24,20 +26,38 @@ type EuropeanProductData = {
 };
 
 async function main() {
-  const brazilianProducts = await fetch(
-    'https://616d6bdb6dacbb001794ca17.mockapi.io/devnology/brazilian_provider',
-  );
+  const [brazilianProducts, europeanProducts] = await Promise.all([
+    fetch(
+      'https://616d6bdb6dacbb001794ca17.mockapi.io/devnology/brazilian_provider',
+    ),
+    fetch(
+      'https://616d6bdb6dacbb001794ca17.mockapi.io/devnology/european_provider',
+    ),
+  ]);
 
   if (!brazilianProducts.ok) {
     throw new Error('Failed to fetch Brazilian products');
   }
 
-  const brazilianProductsData =
-    (await brazilianProducts.json()) as BrazilianProductData[];
+  const brazilianProductsData = (await brazilianProducts.json()) as any[];
 
-  const europeanProducts = await fetch(
-    'https://616d6bdb6dacbb001794ca17.mockapi.io/devnology/european_provider',
-  );
+  const brazilianProductsFormated: BrazilianProductFormated[] = [];
+
+  function formatProducts(obj: any) {
+    if (Array.isArray(obj)) {
+      obj.forEach(formatProducts);
+    } else if (obj && typeof obj === 'object') {
+      if ('nome' in obj) {
+        const onlyProperties = Object.fromEntries(
+          Object.entries(obj).filter(([key]) => isNaN(Number(key))),
+        ) as BrazilianProductFormated;
+        brazilianProductsFormated.push(onlyProperties);
+      }
+      Object.values(obj).forEach(formatProducts);
+    }
+  }
+
+  formatProducts(brazilianProductsData);
 
   if (!europeanProducts.ok) {
     throw new Error('Failed to fetch European products');
@@ -45,7 +65,7 @@ async function main() {
   const europeanProductsData =
     (await europeanProducts.json()) as EuropeanProductData[];
 
-  for (const product of brazilianProductsData) {
+  for (const product of brazilianProductsFormated) {
     const brazilianIntegerPrice = Math.round(parseFloat(product.preco) * 100);
 
     await prisma.product.create({
