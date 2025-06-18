@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type FormEvent } from "react";
+import React, { useState, useEffect, type FormEvent, useMemo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
@@ -30,8 +30,12 @@ export default function Layout() {
   const [searchTerm, setSearchTerm] = useState("");
   // const [filtersOpen, setFiltersOpen] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [setProducts, setIsLoading] = useProducts(
-    useShallow((state) => [state.setProducts, state.setIsLoading])
+  const [products, setProducts, setIsLoading] = useProducts(
+    useShallow((state) => [
+      state.products,
+      state.setProducts,
+      state.setIsLoading,
+    ])
   );
 
   useEffect(() => {
@@ -86,28 +90,25 @@ export default function Layout() {
     setSearchTerm(urlParams.get("search") || "");
   }, [location.search]);
 
-  const categories = [
-    { value: "eletronicos", label: "Eletrônicos" },
-    { value: "roupas", label: "Roupas" },
-    { value: "casa", label: "Casa" },
-    { value: "esportes", label: "Esportes" },
-    { value: "livros", label: "Livros" },
-    { value: "beleza", label: "Beleza" },
-    { value: "automotivo", label: "Automotivo" },
-  ];
-  const materials = [
-    { value: "algodao", label: "Algodão" },
-    { value: "poliester", label: "Poliéster" },
-    { value: "couro", label: "Couro" },
-    { value: "metal", label: "Metal" },
-    { value: "plastico", label: "Plástico" },
-    { value: "madeira", label: "Madeira" },
-    { value: "vidro", label: "Vidro" },
-    { value: "ceramica", label: "Cerâmica" },
-  ];
+  const categories = useMemo(() => {
+    const unicCategories = new Set(products.map((p) => p.category));
+    return Array.from(unicCategories).map((category) => ({
+      value: category,
+      label: category
+    }));
+  }, [products]);
+
+  const materials = useMemo(() => {
+    const unicMaterials = new Set(products.map((p) => p.material));
+    return Array.from(unicMaterials).map((material) => ({
+      value: material,
+      label: material
+    }));
+  }, [products]);
+  
   const suppliers = [
-    { value: "brasileiro", label: "🇧🇷 Nacional" },
-    { value: "europeu", label: "🇪🇺 Europeu" },
+    { value: "BRAZILIAN", label: "🇧🇷 Nacional" },
+    { value: "EUROPEAN", label: "🇪🇺 Europeu" },
   ];
   const filterGroups = [
     { id: "category", label: "Categorias", items: categories },
@@ -153,12 +154,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <style>{`
-        :root {
-          --primary: #2F52E0; --primary-dark: #1E3A8A; --primary-light: #3B82F6;
-        }
-      `}</style>
-
       <header className="bg-white shadow-sm border-b sticky top-0 left-0 right-0 z-50 h-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
@@ -193,7 +188,7 @@ export default function Layout() {
                 >
                   <ShoppingCart className="w-5 h-5" />
                   {cartItems.length > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 text-xs bg-[var(--primary)]">
+                    <Badge className="absolute -top-0 -right-0 h-3 w-3 rounded-full p-0 text-xs bg-[var(--primary)]">
                       {/* {cartItems.reduce((sum, item) => sum + item.quantity, 0)} */}
                     </Badge>
                   )}

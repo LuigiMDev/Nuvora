@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProductCard from "@/components/ui/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,11 +10,13 @@ import { useProducts } from "@/states/products";
 import { useShallow } from "zustand/react/shallow";
 import type { Product } from "@/types/products";
 
-type FilterKey = 'category' | 'material' | 'supplier' | 'search';
+type FilterKey = "category" | "material" | "supplier" | "search";
 type ActiveFilters = Partial<Record<FilterKey, string>>;
 
 export default function Home() {
-  const [products, isLoading] = useProducts(useShallow((state) => [state.products, state.loading]));
+  const [products, isLoading] = useProducts(
+    useShallow((state) => [state.products, state.loading])
+  );
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const location = useLocation();
@@ -23,61 +25,79 @@ export default function Home() {
     parseUrlFilters();
   }, [location.search]);
 
-  useEffect(() => {
-    applyFilters();
-  }, [products, activeFilters]);
-
   const parseUrlFilters = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const filters: ActiveFilters = {};
 
-    if (urlParams.get("category")) filters.category = urlParams.get("category")!;
-    if (urlParams.get("material")) filters.material = urlParams.get("material")!;
-    if (urlParams.get("supplier")) filters.supplier = urlParams.get("supplier")!;
+    if (urlParams.get("category"))
+      filters.category = urlParams.get("category")!;
+    if (urlParams.get("material"))
+      filters.material = urlParams.get("material")!;
+    if (urlParams.get("supplier"))
+      filters.supplier = urlParams.get("supplier")!;
     if (urlParams.get("search")) filters.search = urlParams.get("search")!;
 
     setActiveFilters(filters);
   };
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...products];
 
     if (activeFilters.search) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(activeFilters.search!.toLowerCase()) ||
-        product.description?.toLowerCase().includes(activeFilters.search!.toLowerCase())
+      filtered = filtered.filter(
+        (product) =>
+          product.name
+            .toLowerCase()
+            .includes(activeFilters.search!.toLowerCase()) ||
+          product.description
+            ?.toLowerCase()
+            .includes(activeFilters.search!.toLowerCase())
       );
     }
 
     if (activeFilters.category) {
-      filtered = filtered.filter(product => product.category === activeFilters.category);
+      filtered = filtered.filter(
+        (product) => product.category === activeFilters.category
+      );
     }
 
     if (activeFilters.material) {
-      filtered = filtered.filter(product => product.material === activeFilters.material);
+      filtered = filtered.filter(
+        (product) => product.material === activeFilters.material
+      );
     }
 
     if (activeFilters.supplier) {
-      filtered = filtered.filter(product => product.supplier === activeFilters.supplier);
+      filtered = filtered.filter(
+        (product) => product.supplier === activeFilters.supplier
+      );
     }
 
     setFilteredProducts(filtered);
-  };
+  }, [setFilteredProducts, activeFilters, products]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [products, activeFilters, applyFilters]);
 
   const removeFilter = (filterKey: FilterKey) => {
     const params = new URLSearchParams(window.location.search);
     params.delete(filterKey);
-    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+    window.history.pushState(
+      {},
+      "",
+      `${window.location.pathname}?${params.toString()}`
+    );
     parseUrlFilters();
   };
 
   const clearAllFilters = () => {
-    window.history.pushState({}, '', window.location.pathname);
+    window.history.pushState({}, "", window.location.pathname);
     parseUrlFilters();
   };
 
   const getFilterLabel = (key: FilterKey, value: string): string => {
-    if (key === 'search') return `Busca: "${value}"`;
+    if (key === "search") return `Busca: "${value}"`;
 
     const labels: Record<string, Record<string, string>> = {
       category: {
@@ -87,7 +107,7 @@ export default function Home() {
         esportes: "Esportes",
         livros: "Livros",
         beleza: "Beleza",
-        automotivo: "Automotivo"
+        automotivo: "Automotivo",
       },
       material: {
         algodao: "Algodão",
@@ -97,12 +117,12 @@ export default function Home() {
         plastico: "Plástico",
         madeira: "Madeira",
         vidro: "Vidro",
-        ceramica: "Cerâmica"
+        ceramica: "Cerâmica",
       },
       supplier: {
         brasileiro: "🇧🇷 Nacional",
-        europeu: "🇪🇺 Europeu"
-      }
+        europeu: "🇪🇺 Europeu",
+      },
     };
 
     return labels[key]?.[value] || value;
@@ -120,12 +140,22 @@ export default function Home() {
                 Bem-vindo à <span className="text-yellow-300">Nuvora</span>
               </h1>
               <p className="text-lg md:text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
-                Descubra produtos incríveis com os melhores preços e qualidade garantida
+                Descubra produtos incríveis com os melhores preços e qualidade
+                garantida
               </p>
               <div className="flex flex-wrap justify-center gap-6 text-sm">
-                <div className="flex items-center gap-2"><Truck className="w-5 h-5" /><span>Frete Grátis</span></div>
-                <div className="flex items-center gap-2"><Star className="w-5 h-5" /><span>Produtos Premium</span></div>
-                <div className="flex items-center gap-2"><Package className="w-5 h-5" /><span>Entrega Rápida</span></div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-5 h-5" />
+                  <span>Frete Grátis</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  <span>Produtos Premium</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  <span>Entrega Rápida</span>
+                </div>
               </div>
             </div>
           </div>
@@ -136,7 +166,9 @@ export default function Home() {
         {hasActiveFilters && (
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Filtros ativos:</span>
+              <span className="text-sm font-medium text-gray-700">
+                Filtros ativos:
+              </span>
               {Object.entries(activeFilters).map(([key, value]) => (
                 <Badge
                   key={key}
@@ -164,14 +196,17 @@ export default function Home() {
           </div>
         )}
 
-
         <section>
           {!hasActiveFilters && (
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Todos os Produtos</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Todos os Produtos
+                </h2>
                 <p className="text-gray-600">
-                  {isLoading ? "Carregando produtos..." : `${products.length} produtos disponíveis`}
+                  {isLoading
+                    ? "Carregando produtos..."
+                    : `${products.length} produtos disponíveis`}
                 </p>
               </div>
             </div>
@@ -195,15 +230,19 @@ export default function Home() {
             </div>
           ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {filteredProducts.map(product => (
+              {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
             <Card className="p-12 text-center col-span-full">
               <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Nenhum produto encontrado</h3>
-              <p className="text-gray-600 mb-4">Tente ajustar ou limpar os filtros para ver mais produtos.</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Nenhum produto encontrado
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Tente ajustar ou limpar os filtros para ver mais produtos.
+              </p>
               {hasActiveFilters && (
                 <Button onClick={clearAllFilters} variant="outline">
                   Limpar Filtros
