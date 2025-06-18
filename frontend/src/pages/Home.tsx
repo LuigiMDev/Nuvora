@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Product as ProductEntity } from "@/entities/Product";
+import { useState, useEffect } from "react";
 import ProductCard from "@/components/ui/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, TrendingUp, Package, Truck, X } from "lucide-react";
+import { Star, Package, Truck, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useProducts } from "@/states/products";
+import { useShallow } from "zustand/react/shallow";
+import type { Product } from "@/types/products";
 
 type FilterKey = 'category' | 'material' | 'supplier' | 'search';
 type ActiveFilters = Partial<Record<FilterKey, string>>;
 
 export default function Home() {
-  const [products, setProducts] = useState<ProductEntity[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductEntity[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [products, isLoading] = useProducts(useShallow((state) => [state.products, state.loading]));
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const location = useLocation();
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
 
   useEffect(() => {
     parseUrlFilters();
@@ -40,17 +37,6 @@ export default function Home() {
     if (urlParams.get("search")) filters.search = urlParams.get("search")!;
 
     setActiveFilters(filters);
-  };
-
-  const loadProducts = async () => {
-    setIsLoading(true);
-    try {
-      const data = await ProductEntity.list("-created_date", 100);
-      setProducts(data);
-    } catch (error) {
-      console.error("Erro ao carregar produtos:", error);
-    }
-    setIsLoading(false);
   };
 
   const applyFilters = () => {
@@ -122,7 +108,6 @@ export default function Home() {
     return labels[key]?.[value] || value;
   };
 
-  const featuredProducts = products.filter(p => p.featured).slice(0, 5);
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
   return (
@@ -179,19 +164,6 @@ export default function Home() {
           </div>
         )}
 
-        {!hasActiveFilters && !isLoading && featuredProducts.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp className="w-6 h-6 text-[var(--primary)]" />
-              <h2 className="text-2xl font-bold text-gray-900">Produtos em Destaque</h2>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </section>
-        )}
 
         <section>
           {!hasActiveFilters && (

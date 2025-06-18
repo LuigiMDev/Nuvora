@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./layout";
+import Home from "./pages/Home";
 
 function App() {
   const router = createBrowserRouter([
@@ -9,15 +10,13 @@ function App() {
       children: [
         {
           path: "",
-          element: <div>Teste</div>
-        }
-      ]
-    }
+          element: <Home />,
+        },
+      ],
+    },
   ]);
 
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

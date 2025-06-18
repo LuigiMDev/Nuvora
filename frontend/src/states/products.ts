@@ -5,12 +5,12 @@ type ProductState = {
   products: Product[];
   setProducts: (products: Product[]) => void;
   loading: boolean;
-  error: string | null;
+  setIsLoading: (loading: boolean) => void;
 };
 
 export const useProducts = create<ProductState>((set) => ({
   products: [],
   setProducts: (products) => set({ products }),
   loading: true,
-  error: null,
+  setIsLoading: (loading) => set({ loading }),
 }));
