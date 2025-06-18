@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import type { MouseEvent } from "react";
 import type { Product } from "@/types/products";
+import { useCart } from "@/states/cart";
 
 type ProductCardProps = {
   product: Product;
@@ -23,35 +24,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       ? product.images[0].imageUrl
       : fallbackImage;
 
+  const addItemToCart = useCart((state) => state.addItemToCart);
+
   const addToCart = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: discountedPrice,
-      originalPrice: product.priceInCents / 100,
-      image: productImage,
-      quantity: 1,
-      discount: product.discountInPercent || 0,
-    };
-
-    const existingCart = JSON.parse(
-      localStorage.getItem("nuvora-cart") || "[]"
-    );
-    const existingItemIndex = existingCart.findIndex(
-      (item: typeof cartItem) => item.id === product.id
-    );
-
-    if (existingItemIndex >= 0) {
-      existingCart[existingItemIndex].quantity += 1;
-    } else {
-      existingCart.push(cartItem);
-    }
-
-    localStorage.setItem("nuvora-cart", JSON.stringify(existingCart));
-    window.dispatchEvent(new CustomEvent("cartUpdated"));
+    addItemToCart(product.id);
   };
 
   const supplierBadgeColor =
@@ -96,15 +75,24 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.discountInPercent && product.discountInPercent > 0 ? (
                 <>
                   <span className="text-base font-bold text-[var(--primary)]">
-                    R$ {discountedPrice.toFixed(2)}
+                    {discountedPrice.toLocaleString("pt-br", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
                   </span>
                   <span className="text-xs text-gray-400 line-through">
-                    R$ {(product.priceInCents / 100).toFixed(2)}
+                    {(product.priceInCents / 100).toLocaleString("pt-br", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
                   </span>
                 </>
               ) : (
                 <span className="text-base font-bold text-gray-900">
-                  R$ {(product.priceInCents / 100).toFixed(2)}
+                  {(product.priceInCents / 100).toLocaleString("pt-br", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </span>
               )}
             </div>
