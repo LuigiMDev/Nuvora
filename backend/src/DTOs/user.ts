@@ -11,7 +11,7 @@ export class CreateUserDTO {
   email: string;
 
   @IsNotEmpty({ message: 'A senha é obrigatória' })
-  @Length(6, 100, { message: 'A senha deve ter entre 6 à 100 caracteres' })
+  @Length(8, 100, { message: 'A senha deve ter entre 6 à 100 caracteres' })
   password: string;
 }
 
@@ -21,6 +21,6 @@ export class UserLoginDTO {
   email: string;
 
   @IsNotEmpty({ message: 'A senha é obrigatória' })
-  @Length(6, 100, { message: 'A senha deve ter entre 6 à 100 caracteres' })
+  @Length(8, 100, { message: 'A senha deve ter entre 6 à 100 caracteres' })
   password: string;
 }
