@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
@@ -34,6 +35,9 @@ export class OrderService {
       );
       return await this.repo.createOrder(orderData, userId);
     } catch (error) {
+      if (error instanceof Error && error.message === 'Token não encontrado') {
+        throw new UnauthorizedException('Token não encontrado');
+      }
       if (
         error instanceof Error &&
         error.message === 'Token inválido ou expirado'
@@ -57,6 +61,9 @@ export class OrderService {
 
       return await this.repo.getOrders(userId);
     } catch (error) {
+      if (error instanceof Error && error.message === 'Token não encontrado') {
+        throw new UnauthorizedException('Token não encontrado');
+      }
       if (
         error instanceof Error &&
         error.message === 'Token inválido ou expirado'
