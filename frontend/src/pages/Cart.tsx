@@ -17,6 +17,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useProducts } from "@/states/products";
 import type { Product } from "@/types/products";
 import type { CartItem } from "@/types/cart";
+import { useOrders } from "@/states/orders";
 
 export default function Cart() {
   const [cartItems, setCartItems, removeItemToCart] = useCart(
@@ -28,6 +29,9 @@ export default function Cart() {
   );
   const products = useProducts((state) => state.products);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
+  const [orders, setOrders] = useOrders(
+    useShallow((state) => [state.orders, state.setOrders])
+  );
   const [orderSuccess, setOrderSuccess] = useState(false);
   const navigate = useNavigate();
 
@@ -97,7 +101,27 @@ export default function Cart() {
   const finalizeOrder = async () => {
     setIsProcessingOrder(true);
     try {
-      // await Order.create(orderData);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ products: cartItems }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Ocorreu um erro ao criar o pedido!");
+      }
+
+      const newOrder = await res.json();
+
+      console.log("orders antes do update:", orders);
+
+      setOrders([...orders, newOrder]);
+
+      console.log("orders depois do update:", orders);
 
       clearCart();
       setOrderSuccess(true);
@@ -172,7 +196,6 @@ export default function Cart() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-     
         <div className="lg:col-span-2 space-y-4">
           {productsInCart.map((item) => (
             <Card key={item.id}>
@@ -182,7 +205,9 @@ export default function Cart() {
                     src={item.images[0].imageUrl}
                     alt={item.name}
                     className="w-20 h-20 rounded-lg object-cover"
-                    onError={(e) => e.currentTarget.src = "/fallback_image.svg"}
+                    onError={(e) =>
+                      (e.currentTarget.src = "/fallback_image.svg")
+                    }
                   />
                   <div className="flex-1">
                     <Link

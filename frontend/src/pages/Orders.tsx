@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Package,
   Clock,
-  Truck,
   CheckCircle,
   XCircle,
   Calendar,
@@ -36,15 +35,11 @@ export default function Orders() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "pendente":
+      case "PENDING":
         return <Clock className="w-4 h-4" />;
-      case "processando":
-        return <Package className="w-4 h-4" />;
-      case "enviado":
-        return <Truck className="w-4 h-4" />;
-      case "entregue":
+      case "DELIVERED":
         return <CheckCircle className="w-4 h-4" />;
-      case "cancelado":
+      case "CANCELLED":
         return <XCircle className="w-4 h-4" />;
       default:
         return <Clock className="w-4 h-4" />;
@@ -53,15 +48,11 @@ export default function Orders() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pendente":
+      case "PENDING":
         return "bg-yellow-100 text-yellow-800";
-      case "processando":
-        return "bg-blue-100 text-blue-800";
-      case "enviado":
-        return "bg-purple-100 text-purple-800";
-      case "entregue":
+      case "DELIVERED":
         return "bg-green-100 text-green-800";
-      case "cancelado":
+      case "CANCELLED":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -70,15 +61,11 @@ export default function Orders() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "pendente":
+      case "PENDING":
         return "Pendente";
-      case "processando":
-        return "Processando";
-      case "enviado":
-        return "Enviado";
-      case "entregue":
+      case "DELIVERED":
         return "Entregue";
-      case "cancelado":
+      case "CANCELLED":
         return "Cancelado";
       default:
         return status;
@@ -188,7 +175,7 @@ export default function Orders() {
                   <h4 className="font-medium text-gray-900">
                     Itens do pedido:
                   </h4>
-                  {order.orderProducts.map((item, index) => (
+                  {order.orderProduct.map((item, index) => (
                     <div
                       key={index}
                       className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0"

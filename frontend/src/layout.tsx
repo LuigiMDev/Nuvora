@@ -85,12 +85,27 @@ export default function Layout() {
       setIsLoading(false);
     };
 
+    checkAuth();
+    searchProducts();
+  }, [
+    setIsLoading,
+    setProducts,
+    setUser,
+    setIsCheckingAuth,
+    setOrders,
+    setIsFindOrders,
+  ]);
+
+  useEffect(() => {
     const searchOrders = async () => {
       try {
         setIsFindOrders(true);
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
+          credentials: "include",
+        });
 
-        if (!res) {
+        if (!res.ok) {
+          console.error((await res.json()).message);
           throw new Error("Ocorreu um erro ao carregar os pedidos!");
         }
 
@@ -101,18 +116,8 @@ export default function Layout() {
       setIsFindOrders(false);
     };
 
-    checkAuth();
-    searchProducts();
     if (user) searchOrders();
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    setIsLoading,
-    setProducts,
-    setUser,
-    setIsCheckingAuth,
-    setOrders,
-    setIsFindOrders,
-  ]);
+  }, [user, setIsFindOrders, setOrders]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);

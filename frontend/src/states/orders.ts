@@ -11,6 +11,6 @@ type OrderState = {
 export const useOrders = create<OrderState>((set) => ({
   orders: [],
   setOrders: (orders: Order[]) => set({ orders }),
-  isFindOrders: true,
+  isFindOrders: false,
   setIsFindOrders: (isFindOrders: boolean) => set({ isFindOrders }),
 }));

@@ -11,7 +11,7 @@ export type OrderProduct = {
 
 export type Order = {
   id: string;
-  orderProducts: OrderProduct[];
+  orderProduct: OrderProduct[];
   totalPriceInCents: number;
   createdAt: string;
   status: "PENDING" | "DELIVERED" | "CANCELLED";
