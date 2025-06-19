@@ -35,7 +35,7 @@ export default function DynamicFilterBar({ filterGroups }: Props) {
   const navigate = useNavigate();
 
   const handleFilterClick = (filterType: string, filterValue: string) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(window.location.search);
     params.set(filterType, filterValue);
     navigate(`/?${params.toString()}`);
   };

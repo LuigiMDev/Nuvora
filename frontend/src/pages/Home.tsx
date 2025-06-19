@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star, Package, Truck, X } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useProducts } from "@/states/products";
 import { useShallow } from "zustand/react/shallow";
 import type { Product } from "@/types/products";
@@ -20,6 +20,7 @@ export default function Home() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     parseUrlFilters();
@@ -83,16 +84,12 @@ export default function Home() {
   const removeFilter = (filterKey: FilterKey) => {
     const params = new URLSearchParams(window.location.search);
     params.delete(filterKey);
-    window.history.pushState(
-      {},
-      "",
-      `${window.location.pathname}?${params.toString()}`
-    );
+    navigate(`${location.pathname}?${params.toString()}`);
     parseUrlFilters();
   };
 
   const clearAllFilters = () => {
-    window.history.pushState({}, "", window.location.pathname);
+    navigate(location.pathname);
     parseUrlFilters();
   };
 
@@ -105,10 +102,12 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center">
               <div className="flex justify-center items-end gap-5 mb-4">
-                <h1 className="text-4xl md:text-5xl font-bold">
-                  Bem-vindo à
-                </h1>
-                <img src="/nuvora_hero.svg" alt="Nuvora" className="max-w-52 w-1/2" />
+                <h1 className="text-4xl md:text-5xl font-bold">Bem-vindo à</h1>
+                <img
+                  src="/nuvora_hero.svg"
+                  alt="Nuvora"
+                  className="max-w-52 w-1/2"
+                />
               </div>
               <p className="text-lg md:text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
                 Descubra produtos incríveis com os melhores preços e qualidade
