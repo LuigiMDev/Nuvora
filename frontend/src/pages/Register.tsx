@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,13 @@ import { toast } from "react-toastify";
 import { useUser } from "@/states/user";
 
 export default function Register() {
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+
+  if (user) {
+    navigate("/");
+  }
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -18,8 +25,6 @@ export default function Register() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  // const setUser = useUser(state => state.setUser)
-  const setUser = useUser((state) => state.setUser);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -114,6 +119,7 @@ export default function Register() {
       setUser(await res.json());
 
       toast.success("Conta criada com sucesso");
+      navigate("/");
     } catch (err: unknown) {
       if (err instanceof Error && err.message) {
         console.log(err.message);
@@ -156,7 +162,7 @@ export default function Register() {
           <CardHeader className="text-center pb-6">
             <img
               src="/nuvora_logo.svg"
-              className="w-full max-w-72 mx-auto mb-2"
+              className="w-full max-w-52 mx-auto mb-2"
             />
             <CardTitle className="text-2xl font-bold text-gray-900">
               Criar sua conta

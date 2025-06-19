@@ -52,18 +52,18 @@ export default function Layout() {
             method: "POST",
             credentials: "include",
             headers: {
-              Accept: "application/json"
-            }
+              Accept: "application/json",
+            },
           }
         );
 
         if (!res.ok) {
           throw new Error("Token inválido ou expirado");
         }
-        
+
         setUser(await res.json());
-      } catch{
-        setUser(null)
+      } catch {
+        setUser(null);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -120,13 +120,6 @@ export default function Layout() {
     { id: "supplier", label: "Fornecedores", items: suppliers },
   ];
 
-  // const handleFilterClick = (filterType, filterValue) => {
-  //   const params = new URLSearchParams(location.search);
-  //   params.set(filterType, filterValue);
-  //   navigate(`/?${params.toString()}`);
-  //   setFiltersOpen(false);
-  // };
-
   const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const params = new URLSearchParams(location.search);
@@ -140,27 +133,22 @@ export default function Layout() {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
-        method: "POST",
-        credentials: "include"
-      })
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/user/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
-      if(!res.ok) {
-        throw new Error("Ocorreu um erro ao fazer o logout!")
+      if (!res.ok) {
+        throw new Error("Ocorreu um erro ao fazer o logout!");
       }
 
       setUser(null);
     } catch (error) {
-      toast.error("Não foi possível fazer sair da sua conta!")
+      toast.error("Não foi possível sair da sua conta!");
       console.error("Erro ao fazer logout:", error);
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      // await UserEntity.login();
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
     }
   };
 
@@ -240,10 +228,20 @@ export default function Layout() {
                       </DropdownMenuItem>
                     </>
                   ) : (
-                    <DropdownMenuItem onClick={handleLogin}>
-                      <LogIn className="w-4 h-4 mr-2" />
-                      Entrar
+                    <>
+                      <DropdownMenuItem asChild>
+                      <Link to="/login" className="flex items-center">
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Entrar
+                      </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/register" className="flex items-center">
+                        <LogIn className="w-4 h-4 mr-2" />
+                        Criar conta
+                      </Link>
+                    </DropdownMenuItem>
+                    </>
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>

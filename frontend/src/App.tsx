@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import ProductPage from "./pages/Product";
 import Cart from "./pages/Cart";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 function App() {
   const router = createBrowserRouter([
@@ -27,6 +28,10 @@ function App() {
         {
           path: "register",
           element: <Register />
+        },
+        {
+          path: "login",
+          element: <Login />
         }
       ],
     },
