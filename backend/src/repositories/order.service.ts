@@ -63,6 +63,7 @@ export class RepositoryOrderService {
         id: true,
         createdAt: true,
         totalPriceInCents: true,
+        status: true,
         orderProduct: {
           select: {
             product: {
@@ -91,6 +92,7 @@ export class RepositoryOrderService {
         id: true,
         createdAt: true,
         totalPriceInCents: true,
+        status: true,
         orderProduct: {
           select: {
             product: {
