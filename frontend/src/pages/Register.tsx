@@ -203,6 +203,8 @@ export default function Register() {
                     id="fullName"
                     name="fullName"
                     type="text"
+                    minLength={3}
+                    maxLength={50}
                     placeholder="Seu nome completo"
                     value={formData.fullName}
                     onChange={handleInputChange}
@@ -246,6 +248,8 @@ export default function Register() {
                   <Input
                     id="password"
                     name="password"
+                    minLength={8}
+                    maxLength={100}
                     type={showPassword ? "text" : "password"}
                     placeholder="Crie uma senha forte"
                     value={formData.password}
@@ -342,6 +346,8 @@ export default function Register() {
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
+                    minLength={8}
+                    maxLength={100}
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirme sua senha"
                     value={formData.confirmPassword}

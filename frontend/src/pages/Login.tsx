@@ -169,6 +169,8 @@ export default function Login() {
                   <Input
                     id="password"
                     name="password"
+                    minLength={8}
+                    maxLength={100}
                     type={showPassword ? "text" : "password"}
                     placeholder="Crie uma senha forte"
                     value={formData.password}

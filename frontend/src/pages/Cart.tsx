@@ -37,7 +37,7 @@ export default function Cart() {
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity <= 0) {
-      removeItem(id);
+      removeItemToCart(id);
       return;
     }
 
@@ -47,10 +47,6 @@ export default function Cart() {
     setCartItems(updatedCart);
     localStorage.setItem("nuvora-cart", JSON.stringify(updatedCart));
     window.dispatchEvent(new CustomEvent("cartUpdated"));
-  };
-
-  const removeItem = (id: number) => {
-    removeItemToCart(id);
   };
 
   const clearCart = () => {
@@ -245,7 +241,7 @@ export default function Cart() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItemToCart(item.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -292,7 +288,7 @@ export default function Cart() {
         </div>
 
         <div className="lg:col-span-1">
-          <Card className="sticky top-3">
+          <Card className="sticky top-32">
             <CardHeader>
               <CardTitle>Resumo do Pedido</CardTitle>
             </CardHeader>

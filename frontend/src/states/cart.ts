@@ -47,9 +47,9 @@ export const useCart = create<CartState>((set, get) => ({
     const existingCart = JSON.parse(localStorage.getItem("nuvora-cart") || "");
 
     if (Array.isArray(existingCart)) {
-      existingCart.filter((p) => p.productId !== productId);
-      localStorage.setItem("nuvora-cart", JSON.stringify(existingCart));
-      setCartItems(existingCart);
+      const newCart = existingCart.filter((p) => p.productId !== productId);
+      localStorage.setItem("nuvora-cart", JSON.stringify(newCart));
+      setCartItems(newCart);
     }
   },
 }));
