@@ -146,6 +146,7 @@ export default function Layout() {
       }
 
       setUser(null);
+      toast.info("Você saiu da sua conta!");
     } catch (error) {
       toast.error("Não foi possível sair da sua conta!");
       console.error("Erro ao fazer logout:", error);
@@ -230,17 +231,17 @@ export default function Layout() {
                   ) : (
                     <>
                       <DropdownMenuItem asChild>
-                      <Link to="/login" className="flex items-center">
-                        <LogIn className="w-4 h-4 mr-2" />
-                        Entrar
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/register" className="flex items-center">
-                        <LogIn className="w-4 h-4 mr-2" />
-                        Criar conta
-                      </Link>
-                    </DropdownMenuItem>
+                        <Link to="/login" className="flex items-center">
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Entrar
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/register" className="flex items-center">
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Criar conta
+                        </Link>
+                      </DropdownMenuItem>
                     </>
                   )}
                 </DropdownMenuContent>
