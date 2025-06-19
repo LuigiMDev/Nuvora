@@ -113,7 +113,6 @@ export default function ProductPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Image Gallery */}
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
             <img

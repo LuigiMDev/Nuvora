@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type FormEvent, useMemo } from "react";
+import { useState, useEffect, type FormEvent, useMemo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
@@ -22,12 +22,15 @@ import DynamicFilterBar from "./components/DynamicFilterBar";
 import { useProducts } from "./states/products";
 import { useShallow } from "zustand/react/shallow";
 import { useCart } from "./states/cart";
+import { useUser } from "./states/user";
 
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const cartItems = useCart(state => state.cartItems)
-  const [user, setUser] = React.useState(null);
+  const cartItems = useCart((state) => state.cartItems);
+  const [user, setUser] = useUser(
+    useShallow((state) => [state.user, state.setUser])
+  );
   const [searchTerm, setSearchTerm] = useState("");
   // const [filtersOpen, setFiltersOpen] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
@@ -40,12 +43,28 @@ export default function Layout() {
   );
 
   useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+  useEffect(() => {
     const checkAuth = async () => {
       try {
-        // const currentUser = await UserEntity.me();
-        // setUser(currentUser);
-      } catch {
-        setUser(null);
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/user/loginWithToken`,
+          {
+            method: "POST",
+            credentials: "include"
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error((await res.json()).message);
+          throw new Error("Token inválido ou expirado");
+        }
+
+        setUser(await res.json());
+      } catch (err) {
+        console.log(err.message)
       } finally {
         setIsCheckingAuth(false);
       }
@@ -69,7 +88,7 @@ export default function Layout() {
 
     checkAuth();
     searchProducts();
-  }, [setIsLoading, setProducts]);
+  }, [setIsLoading, setProducts, setUser]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -80,7 +99,7 @@ export default function Layout() {
     const unicCategories = new Set(products.map((p) => p.category));
     return Array.from(unicCategories).map((category) => ({
       value: category,
-      label: category
+      label: category,
     }));
   }, [products]);
 
@@ -88,10 +107,10 @@ export default function Layout() {
     const unicMaterials = new Set(products.map((p) => p.material));
     return Array.from(unicMaterials).map((material) => ({
       value: material,
-      label: material
+      label: material,
     }));
   }, [products]);
-  
+
   const suppliers = [
     { value: "BRAZILIAN", label: "🇧🇷 Nacional" },
     { value: "EUROPEAN", label: "🇪🇺 Europeu" },
@@ -146,7 +165,7 @@ export default function Layout() {
             <div className="flex items-center gap-4 flex-1">
               <Link to={"/"} className="flex items-center shrink-0">
                 <img
-                  src="/nuvora_logo.png"
+                  src="/nuvora_logo.svg"
                   alt="Nuvora"
                   className="ml-2 w-24"
                 />
@@ -197,8 +216,10 @@ export default function Layout() {
                   ) : user ? (
                     <>
                       <div className="px-2 py-1.5 text-sm">
-                        {/* <div className="font-medium">{user.full_name || user.email}</div> */}
-                        {/* <div className="text-gray-500 text-xs">{user.email}</div> */}
+                        <div className="font-medium">{user.name}</div>
+                        <div className="text-gray-500 text-xs">
+                          {user.email}
+                        </div>
                       </div>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/Orders")}>
@@ -230,7 +251,7 @@ export default function Layout() {
         </div>
       </div>
 
-      <main className="pt-8">
+      <main className="">
         <Outlet />
       </main>
 

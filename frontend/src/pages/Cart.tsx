@@ -101,7 +101,6 @@ export default function Cart() {
     try {
       // await Order.create(orderData);
 
-      // Limpar carrinho
       clearCart();
       setOrderSuccess(true);
 
@@ -175,7 +174,7 @@ export default function Cart() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
+     
         <div className="lg:col-span-2 space-y-4">
           {productsInCart.map((item) => (
             <Card key={item.id}>
@@ -269,9 +268,8 @@ export default function Cart() {
           </Button>
         </div>
 
-        {/* Order Summary */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-32">
+          <Card className="sticky top-3">
             <CardHeader>
               <CardTitle>Resumo do Pedido</CardTitle>
             </CardHeader>
