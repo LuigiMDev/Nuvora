@@ -17,8 +17,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isCheckingAuth && !user) {
-      toast.warn("É preciso estar logado para acessar esta página!");
+    if (!isCheckingAuth && user) {
       navigate("/");
     }
   }, [user, isCheckingAuth, navigate]);
