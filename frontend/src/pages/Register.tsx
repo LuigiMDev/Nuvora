@@ -94,6 +94,7 @@ export default function Register() {
         `${import.meta.env.VITE_BACKEND_URL}/user/create`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",

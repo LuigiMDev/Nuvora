@@ -53,18 +53,20 @@ export default function Layout() {
           `${import.meta.env.VITE_BACKEND_URL}/user/loginWithToken`,
           {
             method: "POST",
-            credentials: "include"
+            credentials: "include",
+            headers: {
+              Accept: "application/json"
+            }
           }
         );
 
         if (!res.ok) {
-          throw new Error((await res.json()).message);
           throw new Error("Token inválido ou expirado");
         }
-
+        
         setUser(await res.json());
-      } catch (err) {
-        console.log(err.message)
+      } catch{
+        setUser(null)
       } finally {
         setIsCheckingAuth(false);
       }
