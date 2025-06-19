@@ -8,14 +8,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { useUser } from "@/states/user";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Register() {
-  const { user, setUser } = useUser();
+  const [user, setUser, isCheckingAuth] = useUser(
+    useShallow((state) => [state.user, state.setUser, state.isCheckingAuth])
+  );
   const navigate = useNavigate();
-
-  if (user) {
-    navigate("/");
-  }
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -146,6 +145,14 @@ export default function Register() {
     if (strength <= 3) return "Boa";
     return "Forte";
   };
+
+  if (isCheckingAuth) {
+    return null;
+  }
+
+  if (user) {
+    navigate("/");
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--primary)]/5 to-[var(--primary)]/10 flex items-center justify-center p-4">

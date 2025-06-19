@@ -7,14 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import { useUser } from "@/states/user";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Login() {
-  const { user, setUser } = useUser();
+  const [user, setUser, isCheckingAuth] = useUser(
+    useShallow((state) => [state.user, state.setUser, state.isCheckingAuth])
+  );
   const navigate = useNavigate();
-
-  if (user) {
-    navigate("/");
-  }
 
   const [formData, setFormData] = useState({
     email: "",
@@ -91,6 +90,14 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  if (isCheckingAuth) {
+    return null;
+  }
+
+  if (user) {
+    navigate("/");
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--primary)]/5 to-[var(--primary)]/10 flex items-center justify-center p-4">

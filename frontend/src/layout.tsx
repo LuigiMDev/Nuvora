@@ -29,12 +29,8 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const cartItems = useCart((state) => state.cartItems);
-  const [user, setUser] = useUser(
-    useShallow((state) => [state.user, state.setUser])
-  );
+  const {user, setUser, isCheckingAuth, setIsCheckingAuth} = useUser()
   const [searchTerm, setSearchTerm] = useState("");
-  // const [filtersOpen, setFiltersOpen] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [products, setProducts, setIsLoading] = useProducts(
     useShallow((state) => [
       state.products,
@@ -87,7 +83,7 @@ export default function Layout() {
 
     checkAuth();
     searchProducts();
-  }, [setIsLoading, setProducts, setUser]);
+  }, [setIsLoading, setProducts, setUser, setIsCheckingAuth]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
