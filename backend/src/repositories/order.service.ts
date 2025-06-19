@@ -4,7 +4,6 @@ import { PrismaService } from 'src/PrismaService/prisma.service';
 import { OrderResponse } from 'src/types/order';
 
 type OrderProductData = {
-  name: string;
   priceInCents: number;
   hasdiscount: boolean;
   discountInPercent: number | null;
@@ -38,7 +37,6 @@ export class RepositoryOrderService {
 
       return {
         productId: product.id,
-        name: product.name,
         hasdiscount: product.hasdiscount,
         discountInPercent: product.discountInPercent,
         priceWithDiscountInCents: product.priceWithDiscountInCents,
@@ -67,8 +65,12 @@ export class RepositoryOrderService {
         totalPriceInCents: true,
         orderProduct: {
           select: {
-            productId: true,
-            name: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
             priceInCents: true,
             hasdiscount: true,
             discountInPercent: true,
@@ -91,8 +93,12 @@ export class RepositoryOrderService {
         totalPriceInCents: true,
         orderProduct: {
           select: {
-            productId: true,
-            name: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
             priceInCents: true,
             hasdiscount: true,
             discountInPercent: true,

@@ -3,8 +3,10 @@ export type OrderResponse = {
   createdAt: Date;
   totalPriceInCents: number;
   orderProduct: {
-    productId: number;
-    name: string;
+    product: {
+      id: number,
+      name: string
+    }
     priceInCents: number;
     hasdiscount: boolean;
     discountInPercent: number | null;
