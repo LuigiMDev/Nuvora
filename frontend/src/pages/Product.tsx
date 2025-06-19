@@ -96,7 +96,7 @@ export default function ProductPage() {
       : product.priceInCents / 100;
 
   const fallbackImage =
-    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=800&fit=crop";
+    "/fallback_image.svg";
   const images =
     product.images && product.images.length > 0
       ? product.images

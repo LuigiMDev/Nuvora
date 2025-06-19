@@ -108,7 +108,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-5xl font-bold">
                   Bem-vindo à
                 </h1>
-                <img src="/nuvora_hero.svg" alt="Nuvora" className="w-52" />
+                <img src="/nuvora_hero.svg" alt="Nuvora" className="max-w-52 w-1/2" />
               </div>
               <p className="text-lg md:text-xl mb-6 text-blue-100 max-w-3xl mx-auto">
                 Descubra produtos incríveis com os melhores preços e qualidade

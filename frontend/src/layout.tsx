@@ -21,11 +21,12 @@ import {
 import DynamicFilterBar from "./components/DynamicFilterBar";
 import { useProducts } from "./states/products";
 import { useShallow } from "zustand/react/shallow";
+import { useCart } from "./states/cart";
 
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = React.useState([]);
+  const cartItems = useCart(state => state.cartItems)
   const [user, setUser] = React.useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   // const [filtersOpen, setFiltersOpen] = useState(false);
@@ -68,21 +69,6 @@ export default function Layout() {
 
     checkAuth();
     searchProducts();
-
-    const savedCart = localStorage.getItem("nuvora-cart");
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-
-    const handleCartUpdate = () => {
-      const updatedCart = localStorage.getItem("nuvora-cart");
-      if (updatedCart) {
-        setCartItems(JSON.parse(updatedCart));
-      }
-    };
-
-    window.addEventListener("cartUpdated", handleCartUpdate);
-    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, [setIsLoading, setProducts]);
 
   useEffect(() => {
@@ -188,8 +174,8 @@ export default function Layout() {
                 >
                   <ShoppingCart className="w-5 h-5" />
                   {cartItems.length > 0 && (
-                    <Badge className="absolute -top-0 -right-0 h-3 w-3 rounded-full p-0 text-xs bg-[var(--primary)]">
-                      {/* {cartItems.reduce((sum, item) => sum + item.quantity, 0)} */}
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0  bg-[var(--primary)] text-[0.7rem]">
+                      {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
                     </Badge>
                   )}
                 </Button>

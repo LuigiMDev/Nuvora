@@ -18,7 +18,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       : product.priceInCents / 100;
 
   const fallbackImage =
-    "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop";
+    "/fallback_image.svg";
   const productImage =
     product.images && product.images.length > 0
       ? product.images[0].imageUrl
@@ -57,7 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           <Badge
             className={`absolute top-2 right-2 ${supplierBadgeColor} font-semibold text-xs`}
-          />
+          >{product.supplier === "BRAZILIAN" ? "Nacional" : "Europeu"}</Badge>
         </div>
 
         <CardContent className="p-3 flex flex-col flex-1">

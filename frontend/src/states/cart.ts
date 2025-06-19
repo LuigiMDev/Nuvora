@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import { create } from "zustand";
 
 type CartItem = {
-  productId: string;
+  productId: number;
   quantity: number;
 };
 
@@ -14,20 +14,20 @@ type CartState = {
 };
 
 export const useCart = create<CartState>((set, get) => ({
-  cartItems: [],
+  cartItems: JSON.parse(localStorage.getItem("nuvora-cart") || "[]"),
   setCartItems: (cartItems: CartItem[]) => set({ cartItems }),
   addItemToCart: (productId: number, quantity: number = 1) => {
     const { setCartItems } = get();
     const cartItem = {
-      id: productId,
-      quantity
+      productId,
+      quantity,
     };
 
     const existingCart = JSON.parse(
       localStorage.getItem("nuvora-cart") || "[]"
     );
     const existingItemIndex = existingCart.findIndex(
-      (item: typeof cartItem) => item.id === productId
+      (item: typeof cartItem) => item.productId === productId
     );
 
     if (existingItemIndex >= 0) {
@@ -39,7 +39,7 @@ export const useCart = create<CartState>((set, get) => ({
     setCartItems(existingCart);
 
     localStorage.setItem("nuvora-cart", JSON.stringify(existingCart));
-    toast.success("Produto adicionado no carrinho")
+    toast.success("Produto adicionado no carrinho");
   },
   removeItemToCart: (productId: number) => {
     const { setCartItems } = get();
@@ -47,7 +47,7 @@ export const useCart = create<CartState>((set, get) => ({
     const existingCart = JSON.parse(localStorage.getItem("nuvora-cart") || "");
 
     if (Array.isArray(existingCart)) {
-      existingCart.filter((p) => p.id !== productId);
+      existingCart.filter((p) => p.productId !== productId);
       localStorage.setItem("nuvora-cart", JSON.stringify(existingCart));
       setCartItems(existingCart);
     }
