@@ -26,4 +26,9 @@ export class UserController {
   async userLoginWithToken(@Req() req: Request) {
     return await this.service.userLoginWithToken(req);
   }
+
+  @Post('logout')
+  userLogout(@Res({passthrough: true}) res: Response) {
+    return this.service.userLogout(res)
+  }
 }

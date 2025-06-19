@@ -115,4 +115,20 @@ export class UserService {
       );
     }
   }
+
+  userLogout(res: Response) {
+    try {
+      return res.cookie('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+        maxAge: 0,
+      });
+    } catch {
+      return new InternalServerErrorException(
+        'Ocorreu um erro ao fazer o logout',
+      );
+    }
+  }
 }
