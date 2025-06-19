@@ -24,6 +24,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useCart } from "./states/cart";
 import { useUser } from "./states/user";
 import { toast } from "react-toastify";
+import { useOrders } from "./states/orders";
 
 export default function Layout() {
   const location = useLocation();
@@ -38,6 +39,7 @@ export default function Layout() {
       state.setIsLoading,
     ])
   );
+  const [setOrders, setIsFindOrders] = useOrders(useShallow(state => [state.setOrders, state.setIsFindOrders]))
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -80,6 +82,14 @@ export default function Layout() {
       }
       setIsLoading(false);
     };
+
+    const searchOrders = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`)
+      } catch {
+
+      }
+    }
 
     checkAuth();
     searchProducts();
@@ -166,6 +176,7 @@ export default function Layout() {
                 <form onSubmit={handleSearchSubmit} className="relative">
                   <Input
                     type="search"
+                    name="search"
                     placeholder="Buscar produtos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

@@ -6,6 +6,7 @@ import ProductPage from "./pages/Product";
 import Cart from "./pages/Cart";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Orders from "./pages/Orders";
 
 function App() {
   const router = createBrowserRouter([
@@ -32,6 +33,10 @@ function App() {
         {
           path: "login",
           element: <Login />
+        },
+        {
+          path: "orders",
+          element: <Orders />
         }
       ],
     },

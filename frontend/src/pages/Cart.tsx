@@ -94,8 +94,6 @@ export default function Cart() {
     }, 0);
   };
 
-  console.log(productsInCart)
-
   const finalizeOrder = async () => {
     setIsProcessingOrder(true);
     try {
