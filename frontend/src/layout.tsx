@@ -30,7 +30,7 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const cartItems = useCart((state) => state.cartItems);
-  const {user, setUser, isCheckingAuth, setIsCheckingAuth} = useUser()
+  const { user, setUser, isCheckingAuth, setIsCheckingAuth } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
   const [products, setProducts, setIsLoading] = useProducts(
     useShallow((state) => [
@@ -39,7 +39,9 @@ export default function Layout() {
       state.setIsLoading,
     ])
   );
-  const [setOrders, setIsFindOrders] = useOrders(useShallow(state => [state.setOrders, state.setIsFindOrders]))
+  const [setOrders, setIsFindOrders] = useOrders(
+    useShallow((state) => [state.setOrders, state.setIsFindOrders])
+  );
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -85,15 +87,31 @@ export default function Layout() {
 
     const searchOrders = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`)
-      } catch {
+        setIsFindOrders(true);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`);
 
+        if (!res) {
+          throw new Error("Ocorreu um erro ao carregar os pedidos!");
+        }
+
+        setOrders(await res.json());
+      } catch {
+        toast.error("Ocorreu um erro ao buscar os pedidos!");
       }
-    }
+      setIsFindOrders(false);
+    };
 
     checkAuth();
     searchProducts();
-  }, [setIsLoading, setProducts, setUser, setIsCheckingAuth]);
+    searchOrders();
+  }, [
+    setIsLoading,
+    setProducts,
+    setUser,
+    setIsCheckingAuth,
+    setOrders,
+    setIsFindOrders,
+  ]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
