@@ -23,6 +23,7 @@ import { useProducts } from "./states/products";
 import { useShallow } from "zustand/react/shallow";
 import { useCart } from "./states/cart";
 import { useUser } from "./states/user";
+import { toast } from "react-toastify";
 
 export default function Layout() {
   const location = useLocation();
@@ -41,10 +42,6 @@ export default function Layout() {
       state.setIsLoading,
     ])
   );
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -143,10 +140,18 @@ export default function Layout() {
 
   const handleLogout = async () => {
     try {
-      // await UserEntity.logout();
-      // setUser(null);
-      // navigate("/");
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
+        method: "POST",
+        credentials: "include"
+      })
+
+      if(!res.ok) {
+        throw new Error("Ocorreu um erro ao fazer o logout!")
+      }
+
+      setUser(null);
     } catch (error) {
+      toast.error("Não foi possível fazer sair da sua conta!")
       console.error("Erro ao fazer logout:", error);
     }
   };
