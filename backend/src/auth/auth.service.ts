@@ -13,8 +13,7 @@ export class AuthService {
   verifyToken(token: string): { userId: string } {
     try {
       return this.jwt.verify<{ userId: string }>(token);
-    } catch (error) {
-      console.error('Token verification failed:', error);
+    } catch {
       throw new Error('Token inválido ou expirado');
     }
   }

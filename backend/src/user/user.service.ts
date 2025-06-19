@@ -100,7 +100,6 @@ export class UserService {
 
       return userWithoutPassword;
     } catch (error) {
-      console.error('Error fetching user by token:', error);
       if (error instanceof Error && error.message === 'Token não encontrado') {
         throw new UnauthorizedException('Token não encontrado');
       }
@@ -110,6 +109,7 @@ export class UserService {
       ) {
         throw new UnauthorizedException('Token inválido ou expirado');
       }
+      console.error('Error fetching user by token:', error);
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar o usuário',
       );

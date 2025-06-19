@@ -34,13 +34,13 @@ export class OrderService {
       );
       return await this.repo.createOrder(orderData, userId);
     } catch (error) {
-      console.log('Error creating order:', error);
       if (
         error instanceof Error &&
         error.message === 'Token inválido ou expirado'
       ) {
         throw new BadRequestException('Token inválido ou expirado');
       }
+      console.log('Error creating order:', error);
       throw new InternalServerErrorException(
         'Ocorreu um erro ao criar o pedido',
       );
@@ -57,13 +57,13 @@ export class OrderService {
 
       return await this.repo.getOrders(userId);
     } catch (error) {
-      console.log('Error fetching orders:', error);
       if (
         error instanceof Error &&
         error.message === 'Token inválido ou expirado'
       ) {
         throw new BadRequestException('Token inválido ou expirado');
       }
+      console.log('Error fetching orders:', error);
       throw new InternalServerErrorException(
         'Ocorreu um erro ao buscar os pedidos',
       );
