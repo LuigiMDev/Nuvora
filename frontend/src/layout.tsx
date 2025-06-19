@@ -103,7 +103,8 @@ export default function Layout() {
 
     checkAuth();
     searchProducts();
-    searchOrders();
+    if (user) searchOrders();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     setIsLoading,
     setProducts,
