@@ -71,13 +71,13 @@ export class UserService {
 
       return userWithoutPassword;
     } catch (error) {
-      console.error('Error creating user:', error);
       if (
         error instanceof Error &&
         error.message === 'E-mail ou senha inválidos'
       ) {
         throw new UnauthorizedException('E-mail ou senha inválidos');
       }
+      console.error('Error creating user:', error);
       throw new InternalServerErrorException('Ocorreu um erro ao fazer login');
     }
   }
@@ -126,7 +126,8 @@ export class UserService {
         maxAge: 0,
       });
       return {message: "Logout realizado!"}
-    } catch {
+    } catch (err) {
+      console.log("Logout error", err)
       return new InternalServerErrorException(
         'Ocorreu um erro ao fazer o logout',
       );
