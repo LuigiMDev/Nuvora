@@ -207,16 +207,6 @@ export default function Orders() {
                   ))}
                 </div>
 
-                {/* {order.shipping_address && (
-                  <div className="mt-4 pt-4 border-t">
-                    <h4 className="font-medium text-gray-900 mb-2">Endereço de entrega:</h4>
-                    <p className="text-sm text-gray-600">
-                      {order.shipping_address.street}, {order.shipping_address.city} - {order.shipping_address.state}
-                      <br />
-                      CEP: {order.shipping_address.zip_code}
-                    </p>
-                  </div>
-                )} */}
               </CardContent>
             </Card>
           ))}
