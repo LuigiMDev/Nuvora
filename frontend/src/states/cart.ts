@@ -39,7 +39,7 @@ export const useCart = create<CartState>((set, get) => ({
     setCartItems(existingCart);
 
     localStorage.setItem("nuvora-cart", JSON.stringify(existingCart));
-    toast.success("Produto adicionado no carrinho");
+    toast.success("Produto adicionado ao carrinho");
   },
   removeItemToCart: (productId: number) => {
     const { setCartItems } = get();

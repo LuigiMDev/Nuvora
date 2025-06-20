@@ -109,6 +109,9 @@ export class RepositoryOrderService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 }
