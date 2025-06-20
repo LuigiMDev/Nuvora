@@ -123,6 +123,24 @@ nuvora/
 
 ---
 
+## 📌 Decisões Técnicas
+
+* **Separei o frontend e o backend em pastas diferentes**, utilizando React + Vite no frontend e NestJS no backend. Essa separação permite maior clareza no desenvolvimento e escalabilidade da aplicação.
+
+* **Utilizei o Zustand** para gerenciamento de estado global por ser leve, simples e mais performático que a Context API.
+
+* **Implementei a persistência do carrinho com localStorage**, garantindo que o usuário não perca os itens ao atualizar a página.
+
+* **A autenticação foi feita com JWT armazenado em cookies httpOnly**, garantindo mais segurança e mantendo a sessão ativa.
+
+* **Usei React Toastify** para feedback visual ao usuário em ações como login, logout, erros e confirmações.
+
+* **Valido manualmente se um e-mail já existe no cadastro de usuários** antes de criar um novo, para oferecer uma resposta mais clara ao cliente em vez de depender apenas do erro gerado pelo Prisma.
+
+* **Utilizo as tipagens automáticas do Prisma**, aproveitando o TypeScript para garantir segurança e robustez no código.
+
+---
+
 ## 📌 Notas Finais
 
 * Certifique-se de que o PostgreSQL está rodando localmente ou configure um banco remoto.
