@@ -27,12 +27,6 @@ export class OrderService {
       }
       const { userId } = this.jwt.verifyToken(token);
 
-      console.log(
-        'Creating order with data:',
-        orderData.products,
-        'for user ID:',
-        userId,
-      );
       return await this.repo.createOrder(orderData, userId);
     } catch (error) {
       if (error instanceof Error && error.message === 'Token não encontrado') {
