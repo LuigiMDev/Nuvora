@@ -101,7 +101,7 @@ export default function Home() {
         <section className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center">
-              <div className="flex justify-center items-end gap-5 mb-4">
+              <div className="flex flex-col sm:flex-row justify-center items-center sm:items-end gap-5 mb-4">
                 <h1 className="text-4xl md:text-5xl font-bold">Bem-vindo à</h1>
                 <img
                   src="/nuvora_hero.svg"
