@@ -13,15 +13,6 @@ export class RepositoryUserService {
     email,
     password,
   }: CreateUserDTO): Promise<User | null> {
-    const existingUser = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    if (existingUser) {
-      throw new Error('Já existe um usuário com este e-mail');
-    }
-
     const passwordEncrypted = await bcrypt.hash(password, 10);
     const user = await this.prisma.user.create({
       data: {
