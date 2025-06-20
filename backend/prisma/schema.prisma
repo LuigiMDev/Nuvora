@@ -3,37 +3,94 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../shared/prisma"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  orders Order[]
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("users")
 }
 
 model Order {
-  id String @id @default(uuid())
-  userID String
-  user User @relation(fields: [userID], references: [id])
-  orderProduct OrderProduct[]
+  id                String         @id @default(uuid())
+  userId            String
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderProduct      OrderProduct[]
+  totalPriceInCents Int
+  status            OrderStatus    @default(PENDING)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
   @@map("orders")
 }
 
+enum OrderStatus {
+  PENDING
+  DELIVERED
+  CANCELLED
+}
+
+// Registro de produtos do pedido, evitando chamada para o back e depois para as APIs de produtos
+
 model OrderProduct {
-  id String @id @default(uuid())
-  orderId String
-  order Order @relation(fields: [orderId], references: [id])
-  productId String
-  quantity Int
+  id                       String   @id @default(uuid())
+  orderId                  String
+  order                    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId                Int
+  product                  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  priceInCents             Int
+  hasdiscount              Boolean  @default(false)
+  discountInPercent        Int?
+  priceWithDiscountInCents Int
+  quantity                 Int
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 
   @@map("order_products")
+}
+
+model Product {
+  id                       Int            @id @default(autoincrement())
+  name                     String
+  description              String
+  priceInCents             Int
+  hasdiscount              Boolean        @default(false)
+  discountInPercent        Int?
+  priceWithDiscountInCents Int
+  images                   ProductImage[]
+  category                 String
+  material                 String
+  supplier                 Supplier
+  OrderProduct             OrderProduct[]
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+
+  @@map("products")
+}
+
+enum Supplier {
+  BRAZILIAN
+  EUROPEAN
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("product_images")
 }
