@@ -117,6 +117,10 @@ export default function Register() {
         }
       );
 
+      if(res.status === 409) {
+        throw new Error("Já existe um usuário cadastrado com este e-mail!")
+      }
+
       if (!res.ok) {
         throw new Error("Ocorreu um erro ao registrar o usuário!");
       }
@@ -126,11 +130,13 @@ export default function Register() {
       toast.success("Conta criada com sucesso");
       navigate("/");
     } catch (err: unknown) {
-      if (err instanceof Error && err.message) {
-        console.log(err.message);
+      if (err instanceof Error && err.message === "Já existe um usuário cadastrado com este e-mail!") {
+        setError("Já existe um usuário cadastrado com este e-mail!");
+      toast.error("Já existe um usuário cadastrado com este e-mail!");
+      } else {
+        setError("Erro ao criar conta. Tente novamente.");
+        toast.error("Ocorreu um erro ao criar sua conta!");
       }
-      setError("Erro ao criar conta. Tente novamente.");
-      toast.error("Ocorreu um erro ao criar sua conta!");
     } finally {
       setIsLoading(false);
     }

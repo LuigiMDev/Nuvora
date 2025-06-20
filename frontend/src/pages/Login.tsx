@@ -76,6 +76,10 @@ export default function Login() {
         }
       );
 
+      if (res.status === 401) {
+        throw new Error("E-mail ou senha inválidos");
+      }
+
       if (!res.ok) {
         throw new Error("Ocorreu um erro ao registrar o usuário!");
       }
@@ -85,13 +89,15 @@ export default function Login() {
       toast.success("Login realizado!");
       navigate("/");
     } catch (err: unknown) {
-      if (err instanceof Error && err.message) {
-        console.log(err.message);
+      if (err instanceof Error && err.message === "E-mail ou senha inválidos") {
+        setError("E-mail ou senha inválidos");
+        toast.error("E-mail ou senha inválidos");
+      } else {
+        setError("Ocorreu um erro ao fazer login! tente novamente mais tarde.");
+        toast.error(
+          "Ocorreu um erro ao fazer login! tente novamente mais tarde."
+        );
       }
-      setError("Erro ao criar conta. Tente novamente.");
-      toast.error(
-        "Ocorreu um erro ao entrar na sua conta! Tente novamente mais tarde."
-      );
     } finally {
       setIsLoading(false);
     }
