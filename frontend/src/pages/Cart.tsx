@@ -18,6 +18,8 @@ import { useProducts } from "@/states/products";
 import type { Product } from "@/types/products";
 import type { CartItem } from "@/types/cart";
 import { useOrders } from "@/states/orders";
+import { useUser } from "@/states/user";
+import { toast } from "react-toastify";
 
 export default function Cart() {
   const [cartItems, setCartItems, removeItemToCart] = useCart(
@@ -26,6 +28,9 @@ export default function Cart() {
       state.setCartItems,
       state.removeItemToCart,
     ])
+  );
+  const [user, isCheckingAuth] = useUser(
+    useShallow((state) => [state.user, state.isCheckingAuth])
   );
   const products = useProducts((state) => state.products);
   const [isProcessingOrder, setIsProcessingOrder] = useState(false);
@@ -97,35 +102,48 @@ export default function Cart() {
   const finalizeOrder = async () => {
     setIsProcessingOrder(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ products: cartItems }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Ocorreu um erro ao criar o pedido!");
+      if (!user) {
+        throw new Error("É necessário fazer login para finalizar um pedido!");
       }
 
-      const newOrder = await res.json();
+      if (!isCheckingAuth) {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ products: cartItems }),
+        });
 
-      console.log("orders antes do update:", orders);
+        if (!res.ok) {
+          throw new Error("Ocorreu um erro ao criar o pedido!");
+        }
 
-      setOrders([...orders, newOrder]);
+        const newOrder = await res.json();
 
-      console.log("orders depois do update:", orders);
+        console.log("orders antes do update:", orders);
 
-      clearCart();
-      setOrderSuccess(true);
+        setOrders([...orders, newOrder]);
 
-      setTimeout(() => {
-        navigate("/Orders");
-      }, 3000);
+        console.log("orders depois do update:", orders);
+
+        clearCart();
+        setOrderSuccess(true);
+
+        setTimeout(() => {
+          navigate("/Orders");
+        }, 3000);
+      }
     } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "É necessário fazer login para finalizar um pedido!"
+      ) {
+        toast.error(error.message);
+        navigate("/login");
+      }
       console.error("Erro ao finalizar pedido:", error);
     }
     setIsProcessingOrder(false);
