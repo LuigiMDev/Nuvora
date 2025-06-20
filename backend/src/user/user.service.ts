@@ -1,9 +1,10 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDTO, UserLoginDTO } from 'src/DTOs/user';
@@ -39,10 +40,10 @@ export class UserService {
     } catch (error) {
       console.error('Error creating user:', error);
       if (
-        error instanceof Error &&
-        error.message === 'Já existe um usuário com este e-mail'
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
       ) {
-        throw new BadRequestException('Já existe um usuário com este e-mail');
+        throw new ConflictException('Já existe um usuário com este e-mail');
       }
       throw new InternalServerErrorException(
         'Ocorreu um erro ao criar o usuário',
