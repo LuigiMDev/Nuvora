@@ -178,7 +178,7 @@ export default function Login() {
                     minLength={8}
                     maxLength={100}
                     type={showPassword ? "text" : "password"}
-                    placeholder="Crie uma senha forte"
+                    placeholder="Digite sua senha"
                     value={formData.password}
                     onChange={handleInputChange}
                     className="pl-10 pr-10"
