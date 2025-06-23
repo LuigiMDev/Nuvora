@@ -31,7 +31,7 @@ export const useCart = create<CartState>((set, get) => ({
     );
 
     if (existingItemIndex >= 0) {
-      existingCart[existingItemIndex].quantity += 1;
+      existingCart[existingItemIndex].quantity += quantity;
     } else {
       existingCart.push(cartItem);
     }
