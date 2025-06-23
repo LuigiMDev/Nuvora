@@ -43,14 +43,15 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (productId) {
-      loadProduct(Number(productId));
+      if (products.length > 0) loadProduct(Number(productId));
     } else {
       navigate("/");
     }
-  }, [navigate, loadProduct, productId]);
+  }, [navigate, loadProduct, productId, products]);
 
   const addToCart = () => {
     if (!product) return;
+    console.log(quantity)
 
     addItemToCart(product.id, quantity);
   };
@@ -95,8 +96,7 @@ export default function ProductPage() {
       ? (product.priceInCents * (1 - product.discountInPercent / 100)) / 100
       : product.priceInCents / 100;
 
-  const fallbackImage =
-    "/fallback_image.svg";
+  const fallbackImage = "/fallback_image.svg";
   const images =
     product.images && product.images.length > 0
       ? product.images
