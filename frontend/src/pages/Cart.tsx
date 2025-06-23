@@ -123,11 +123,7 @@ export default function Cart() {
 
         const newOrder = await res.json();
 
-        console.log("orders antes do update:", orders);
-
-        setOrders([...orders, newOrder]);
-
-        console.log("orders depois do update:", orders);
+        setOrders([newOrder, ...orders]);
 
         clearCart();
         setOrderSuccess(true);
